@@ -1,6 +1,6 @@
 # pylint: disable=E0401
 from app import app
-from flask import jsonify
+from flask import jsonify, request
 
 
 @app.route('/api/', methods=['GET'])

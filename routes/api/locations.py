@@ -45,27 +45,18 @@ def locations_get_one_update_delete(id):
 @app.route(PREFIX + '<id>/childs', methods=['GET'])
 def get_location_childs(id):
     father_location = Location.query.get(id)
-
-    childs = father_location.child
-
-    result = locations_schema.dump(childs)
+    result = locations_schema.dump(father_location.child)
     return jsonify(result)
 
-@app.route(PREFIX + '<id>/breadcrum', methods=['GET'])
+@app.route(PREFIX + '<id>/breadcrumb', methods=['GET'])
 def get_location_nodes(id):
-    current_location = Location.query.get(id)
-    
+    try:
+        current_location = Location.query.get(id)
+        
+        if current_location == None:
+            return Response("The location does not exist", status=400)
 
-    node_list = []
-    node_list.append({
-        'id': current_location.id,
-        'name': current_location.name,
-        'descriptioni': current_location.description,
-        'parent': current_location.parent_id
-        })
-
-    while not current_location.parent == None:
-        current_location = current_location.parent
+        node_list = []
         node_list.append({
             'id': current_location.id,
             'name': current_location.name,
@@ -73,4 +64,16 @@ def get_location_nodes(id):
             'parent': current_location.parent_id
             })
 
-    return jsonify(result = node_list)
+        while not current_location.parent == None:
+            current_location = current_location.parent
+            node_list.append({
+                'id': current_location.id,
+                'name': current_location.name,
+                'descriptioni': current_location.description,
+                'parent': current_location.parent_id
+                })
+
+        node_list = node_list.reverse()
+        return jsonify(result = node_list)
+    except:
+        return Response("No se pudo generar la lista", status=500)

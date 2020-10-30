@@ -1,6 +1,6 @@
 #pylint: disable=E0401
 from app import app, db
-from flask import jsonify, request
+from flask import jsonify, request, Response
 from schemas.location_schema import Location, location_schema, locations_schema 
 
 PREFIX = '/api/locations/'
@@ -30,11 +30,47 @@ def get_and_create_location():
 
 @app.route(PREFIX + '<id>', methods=['GET', 'PUT', 'DELETE'])
 def locations_get_one_update_delete(id):
+    current_location = Location.query.get(id)
     if request.method == 'GET':
-        return jsonify({'TODO': 'GET A SINGLE LOCATION'})
+        return location_schema.jsonify(current_location)
+
 
     if request.method == 'PUT':
         return jsonify({'TODO': 'UPDATE A LOCATION'})
 
     if request.method == 'DELETE':
         return jsonify({'TODO': 'DELETE A LOCATION'})
+
+
+@app.route(PREFIX + '<id>/childs', methods=['GET'])
+def get_location_childs(id):
+    father_location = Location.query.get(id)
+
+    childs = father_location.child
+
+    result = locations_schema.dump(childs)
+    return jsonify(result)
+
+@app.route(PREFIX + '<id>/breadcrum', methods=['GET'])
+def get_location_nodes(id):
+    current_location = Location.query.get(id)
+    
+
+    node_list = []
+    node_list.append({
+        'id': current_location.id,
+        'name': current_location.name,
+        'descriptioni': current_location.description,
+        'parent': current_location.parent_id
+        })
+
+    while not current_location.parent == None:
+        current_location = current_location.parent
+        node_list.append({
+            'id': current_location.id,
+            'name': current_location.name,
+            'descriptioni': current_location.description,
+            'parent': current_location.parent_id
+            })
+
+    return jsonify(result = node_list)

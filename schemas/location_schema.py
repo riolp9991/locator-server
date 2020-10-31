@@ -9,7 +9,7 @@ class Location(db.Model):
     description = db.Column(db.String(200))
     parent_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
 
-    child = db.relationship('Location', backref=db.backref('parent', remote_side=[id]))
+    child = db.relationship('Location', cascade='all,delete', backref=db.backref('parent', remote_side=[id]))
     
     def __init__(self, name, description, parent_id = None):
         self.name = name

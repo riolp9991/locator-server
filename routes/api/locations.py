@@ -2,6 +2,7 @@
 from app import app, db
 from flask import jsonify, request, Response
 from schemas.location_schema import Location, location_schema, locations_schema 
+from schemas.items_schema import items_schema
 
 PREFIX = '/api/locations/'
 
@@ -104,3 +105,16 @@ def get_location_nodes(id):
         return jsonify(result = node_list)
     except:
         return Response("No se pudo generar la lista", status=500)
+
+
+@app.route(PREFIX + '<id>/items', methods=['GET'])
+def get_items_for_location(id):
+    try:
+        current_location = Location.query.get(id)
+        if current_location == None:
+            return Response('The Location Was Not Found', status=400)
+        items_of_locations = current_location.items
+
+        return jsonify(items_schema.dump(items_of_locations))
+    except:
+        return Response('Something Went Wrong', status=500)

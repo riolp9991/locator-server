@@ -10,6 +10,8 @@ class Location(db.Model):
     parent_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
 
     child = db.relationship('Location', cascade='all,delete', backref=db.backref('parent', remote_side=[id]))
+
+    items = db.relationship('Item', cascade='all,delete', backref='location')
     
     def __init__(self, name, description, parent_id = None):
         self.name = name

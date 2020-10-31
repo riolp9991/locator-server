@@ -5,7 +5,7 @@ class Location(db.Model):
     __tablename__ = "locations"
     #pylint: disable=E1101
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
     description = db.Column(db.String(200))
     parent_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
 

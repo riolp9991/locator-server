@@ -7,7 +7,7 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(200))
-    location_id = db.Column(db.Integer, db.ForeignKey('locations.id', nullable=False))
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
 
 
     def __init__(self,name,description,location_id=None):
@@ -23,4 +23,4 @@ class ItemSchema(ma.Schema):
 
 
 item_schema = ItemSchema()
-idems_schema = ItemSchema(many=True)
+items_schema = ItemSchema(many=True)

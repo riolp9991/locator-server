@@ -27,3 +27,10 @@ def get_and_create_items():
             return item_schema.jsonify(new_item)
     except:
         return Response('Algo ha salido mal')
+
+
+@app.route(PREFIX + '<id>', methods=['GET', 'PUT', 'DELETE'])
+def get_update_delete_one_item(id):
+    return jsonify({
+        'msg': 'Work on progress'
+        })
